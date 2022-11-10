@@ -8,10 +8,15 @@ export function Home() {
         <form action="">
           <StylesForm>
             <label htmlFor="task">Vou trabalhar em</label>
-            <StylesInputTask placeholder="Dê um nome para o seu projeto" id="task" type="text" />
+            <StylesInputTask list="taskSuggestions" placeholder="Dê um nome para o seu projeto" id="task" type="text" />
+
+            <datalist id="taskSuggestions">
+              <option value="Projeto 1"></option>
+              <option value="Projeto 2"></option>
+            </datalist>
 
             <label htmlFor="minutesDuration">durante</label>
-            <StylesMinutesDuration placeholder="00" id="minutesDuration" type="number" />
+            <StylesMinutesDuration step={5} min={5} max={60} placeholder="00" id="minutesDuration" type="number" />
 
             <span>minutos.</span>
           </StylesForm>

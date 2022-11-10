@@ -100,10 +100,15 @@ const StyledBase = styled.input`
         color: ${props=> props.theme["gray-500"]};
 
     }
+
 `
 
 export const StylesInputTask = styled(StyledBase)`
     flex: 1;
+
+    &::-webkit-calendar-picker-indicator{
+        display: none !important;
+    }
 `
 
 export const StylesMinutesDuration = styled(StyledBase)`
