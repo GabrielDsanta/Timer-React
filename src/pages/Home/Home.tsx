@@ -3,6 +3,7 @@ import { StylesButton, StylesCounter, StylesForm, StylesHome, StylesInputTask, S
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as zod from 'zod'
+import { useState } from "react";
 
 
 const rulesValidationsForm = zod.object({
@@ -16,20 +17,51 @@ const rulesValidationsForm = zod.object({
 
 type formTypeData = zod.infer<typeof rulesValidationsForm>
 
+interface PresetsCycle {
+  id: string
+  task: string
+  minutesDuration: number
+}
+
 export function Home() {
+  const [cycles, setCycle] = useState<PresetsCycle[]>([])
+  const [activeCyclesID, setActiveCycles] = useState<string | null>()
+  const [secondsPassed, setSecondsPassed] = useState(0)
+
   const { register, handleSubmit, watch, reset } = useForm<formTypeData>({
     resolver: zodResolver(rulesValidationsForm),
-
     defaultValues: {
       task: '',
       minutesDuration: 0,
     }
   })
 
+  const activeCycle = cycles.find((cycle) => cycle.id === activeCyclesID)
+
   function SubmitForm(data: formTypeData){
-    console.log(data)
+
+    const newCycle: PresetsCycle = {
+      id: String(new Date().getTime()),
+      task: data.task,
+      minutesDuration: data.minutesDuration,
+    }
+
+    setCycle((state) => [...state, newCycle])
+    setActiveCycles(newCycle.id)
+
+    console.log(newCycle)
     reset()
+    
   }
+
+  const totalSeconds = activeCycle ? activeCycle.minutesDuration * 60 : 0 
+  const currentSeconds = activeCycle ? totalSeconds - secondsPassed : 0
+
+  const minutesAmount = Math.floor(currentSeconds / 60)
+  const secondsAmount = currentSeconds % 60
+
+  const minutes = String(minutesAmount).padStart(2, "0")
+  const seconds = String(secondsAmount).padStart(2, "0")
 
   const task = watch("task")
   const DisableWhenButton = !task
@@ -70,11 +102,11 @@ export function Home() {
         
 
           <StylesCounter>
-            <span>0</span>
-            <span>0</span>
+            <span>{minutes[0]}</span>
+            <span>{minutes[1]}</span>
             <StylesTwoPoints>:</StylesTwoPoints>
-            <span>0</span>
-            <span>0</span>
+            <span>{seconds[0]}</span>
+            <span>{seconds[1]}</span>
           </StylesCounter>
 
           <StylesButton disabled={DisableWhenButton} type="submit">
