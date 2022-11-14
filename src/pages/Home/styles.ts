@@ -1,3 +1,5 @@
+
+
 import styled from "styled-components";
 
 
@@ -15,45 +17,7 @@ export const StylesHome = styled.main`
     }
 `
 
-export const StylesForm = styled.div`
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    font-size: 1.25rem;
-    color: ${props => props.theme["gray-100"]};
-    flex-wrap: wrap;
-    font-weight: bold;
-`
-
-export const StylesCounter = styled.div`
-    font-family: 'Roboto Mono', monospace;
-    font-size: 10rem;
-    line-height: 8rem;
-
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-
-    span{
-        background: ${props=> props.theme["gray-700"]};
-        padding: 2rem 1rem;
-        border-radius: 8px;
-    }
-`
-
-export const StylesTwoPoints = styled.div`
-    padding: 2rem 0;
-    color: ${props=> props.theme["green-500"]};
-
-    width: 4rem;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-`
-
-export const StylesButton = styled.button`
+export const StylesBaseButton = styled.button`
     width: 100%;
     border: 0;
     padding: 1rem;
@@ -68,10 +32,26 @@ export const StylesButton = styled.button`
 
     cursor: pointer;
 
-    background: ${props => props.theme["green-500"]};
     color: ${props => props.theme["gray-100"]};
+`
 
-    &:not(:disabled) :hover{
+export const StylesStopButton = styled(StylesBaseButton)`
+    background: ${props => props.theme["red-500"]};
+
+    &&:hover{
+        background: ${props => props.theme["red-700"]};
+    }
+
+    &&:focus{
+        outline: solid 2px ${props => props.theme["red-700"]};
+    }
+`
+
+export const StylesStartButton = styled(StylesBaseButton)`
+     background: ${props => props.theme["green-500"]};
+
+
+     &:not(:disabled) :hover{
         background: ${props => props.theme["green-700"]};
     }
 
@@ -79,38 +59,4 @@ export const StylesButton = styled.button`
         opacity: 0.7;
         cursor: not-allowed;
     }
-`
-
-const StyledBase = styled.input`
-    background: transparent;
-    height: 2.5rem;
-    border: 0;
-    border-bottom: 2px solid ${props=> props.theme["gray-500"]};
-    font-weight: bold;
-    font-size: 1.125rem;
-    padding: 0 .5rem;
-    color: ${props=> props.theme["gray-100"]};
-
-    &:focus{
-        box-shadow: none;
-        border-color: ${props=> props.theme["green-500"]};
-    }
-
-    &::placeholder{
-        color: ${props=> props.theme["gray-500"]};
-
-    }
-
-`
-
-export const StylesInputTask = styled(StyledBase)`
-    flex: 1;
-
-    &::-webkit-calendar-picker-indicator{
-        display: none !important;
-    }
-`
-
-export const StylesMinutesDuration = styled(StyledBase)`
-    width: 4rem;
 `
