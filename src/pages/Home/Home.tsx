@@ -33,12 +33,17 @@ export function Home() {
 
   const { handleSubmit, watch, reset } = newCycleForm
 
+  function handleCreateNewCycle(data:formTypeData){
+    CreateNewCycle(data)
+    reset()
+  }
+
   const task = watch("task")
   const DisableWhenButton = !task
 
   return (
     <StylesHome>
-        <form onSubmit={handleSubmit(CreateNewCycle)} action="">
+        <form onSubmit={handleSubmit(handleCreateNewCycle)} action="">
         
           <FormProvider {...newCycleForm}>
             <NewCycleForm/>
