@@ -1,18 +1,10 @@
 import { createContext, ReactNode, useReducer, useState } from "react";
+import { PresetsCycle, ReducerCycle } from "../reducers/ReducerCycle";
 
 
 interface CreateCycleData{
     task: string
     minutesDuration: number
-}
-
-interface PresetsCycle {
-    id: string
-    task: string
-    minutesDuration: number
-    startDate: Date
-    stopDate?: Date
-    finishDate?: Date
 }
 
 interface CycleContextData{
@@ -26,11 +18,6 @@ interface CycleContextData{
     CreateNewCycle: (data: CreateCycleData) => void
 }
 
-interface CyclesStateData{
-  cycles: PresetsCycle[]
-  activeCyclesID: string | null
-}
-
 export const CycleContext = createContext({} as CycleContextData)
 
 interface CycleContextProviderProps{
@@ -38,39 +25,13 @@ interface CycleContextProviderProps{
 }
 
 export function CyclesContextProvider({ children }: CycleContextProviderProps){
-    const [cyclesState, dispatch] = useReducer((state: CyclesStateData, action: any) => {
-
-      if(action.type === 'ADD_NEW_CYCLE'){
-        return {
-          ...state, 
-          cycles: [...state.cycles, action.payload.newCycle],
-          activeCyclesID: action.payload.newCycle.id,
-        }
-      }
-
-      if(action.type === 'STOP_CYCLE'){
-        return{
-          ...state,
-          cycles: state.cycles.map((cycle) => {
-    
-            if(cycle.id === state.activeCyclesID){
-              return { ...cycle, stopDate: new Date() }
-            }
-      
-            else{
-              return cycle
-            }
-      
-          }),
-          activeCyclesID: null
-        }
-      }
-
-      return state
-    }, {
+    const [cyclesState, dispatch] = useReducer(
+      ReducerCycle, 
+      {
       cycles: [],
       activeCyclesID: null,
-    })
+      }
+    )
 
     const { cycles, activeCyclesID} = cyclesState
     const [secondsPassed, setSecondsPassed] = useState(0)
@@ -85,16 +46,6 @@ export function CyclesContextProvider({ children }: CycleContextProviderProps){
       }
 
     })
-        // setCycle(state => state.map((cycle) => {
-        
-        //   if(cycle.id === activeCyclesID){
-        //     return { ...cycle, finishDate: new Date() }
-        //   }
-    
-        //   else{
-        //     return cycle
-        //   }
-        // }))
     }
 
     function CallSetSecondsPassed(seconds: number){
@@ -126,7 +77,6 @@ export function CyclesContextProvider({ children }: CycleContextProviderProps){
           }
 
         })
-        // setCycle((state) => [...state, newCycle])
         setSecondsPassed(0)
     }
   
