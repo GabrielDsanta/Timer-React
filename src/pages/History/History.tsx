@@ -1,4 +1,6 @@
 import { useContext } from "react";
+import { formatDistanceToNow } from "date-fns"
+import ptBR from "date-fns/locale/pt-BR"
 import { CycleContext } from "../../contexts/CycleContext";
 import { StylesHistory, StylesHistoryList, StylesStatus } from "./styles";
 
@@ -21,50 +23,22 @@ export function History(){
                     </thead>
 
                     <tbody>
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há 2 meses</td>
-                            <td>
-                                <StylesStatus statusColor='green'>Concluído</StylesStatus>
-                            </td>
-                        </tr>
+                        {cycles.map((cycle) => {
+                            return(
+                                <tr key={cycle.id}>
+                                    <td>{cycle.task}</td>
+                                    <td>{cycle.minutesDuration} minutos</td>
+                                    <td>{formatDistanceToNow(cycle.startDate, {addSuffix: true, locale: ptBR})}</td>
+                                    <td>
+                                        {cycle.finishDate && (<StylesStatus statusColor='green'>Concluído</StylesStatus>)}
 
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há 2 meses</td>
-                            <td>
-                                <StylesStatus statusColor='green'>Concluído</StylesStatus>
-                            </td>
-                        </tr>
+                                        {cycle.stopDate && (<StylesStatus statusColor='red'>Interrompído</StylesStatus>)}
 
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há 2 meses</td>
-                            <td>
-                                <StylesStatus statusColor='green'>Concluído</StylesStatus>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há 2 meses</td>
-                            <td>
-                                <StylesStatus statusColor='green'>Concluído</StylesStatus>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>Tarefa</td>
-                            <td>20 minutos</td>
-                            <td>Há 2 meses</td>
-                            <td>
-                                <StylesStatus statusColor='green'>Concluído</StylesStatus>
-                            </td>
-                        </tr>
+                                        {!cycle.stopDate && !cycle.finishDate && (<StylesStatus statusColor='yellow'>Em Andamento</StylesStatus>)}
+                                    </td>
+                                </tr>
+                            )
+                        })}
                     </tbody>
                 </table>
             </StylesHistoryList>
