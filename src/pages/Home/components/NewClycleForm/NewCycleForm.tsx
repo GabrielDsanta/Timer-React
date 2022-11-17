@@ -15,7 +15,7 @@ export function NewCycleForm(){
 
             <StylesInputTask 
               list="taskSuggestions" 
-              placeholder="Dê um nome para o seu projeto" 
+              placeholder="Adicione um nome a tarefa" 
               id="task" 
               type="text" 
               disabled={!!activeCycle}
