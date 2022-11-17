@@ -1,5 +1,6 @@
-import { createContext, ReactNode, useReducer, useState } from "react";
-import { PresetsCycle, ReducerCycle } from "../reducers/ReducerCycle";
+import { differenceInSeconds } from "date-fns";
+import { createContext, ReactNode, useEffect, useReducer, useState } from "react";
+import { ActionTypes, PresetsCycle, ReducerCycle } from "../reducers/ReducerCycle";
 
 
 interface CreateCycleData{
@@ -30,17 +31,35 @@ export function CyclesContextProvider({ children }: CycleContextProviderProps){
       {
       cycles: [],
       activeCyclesID: null,
-      }
-    )
+      },() => {
+        const storedStateAsJSON = localStorage.getItem('@ignite-timer:cycles-state-1.0.0')
+
+        if(storedStateAsJSON){
+          return JSON.parse(storedStateAsJSON)
+        }
+
+      })
 
     const { cycles, activeCyclesID} = cyclesState
-    const [secondsPassed, setSecondsPassed] = useState(0)
-
     const activeCycle = cycles.find((cycle) => cycle.id === activeCyclesID)
+
+    const [secondsPassed, setSecondsPassed] = useState(() => {
+      if(activeCycle){
+        return differenceInSeconds(new Date(), new Date(activeCycle.startDate))
+      }
+
+      return  0
+    })
+
+    useEffect(() =>{
+      const stateJSON = JSON.stringify(cyclesState)
+
+      window.localStorage.setItem('@ignite-timer:cycles-state-1.0.0', stateJSON)
+    }, [cyclesState])
 
     function FineshedCurrentCycle(){
       dispatch({
-        type: 'FINISH_CYCLE',
+        type: ActionTypes.FINISH_CYCLE,
         payload: {
           activeCyclesID
       }
@@ -54,7 +73,7 @@ export function CyclesContextProvider({ children }: CycleContextProviderProps){
 
     function StopCurrentCycle(){
         dispatch({
-          type: 'STOP_CYCLE',
+          type: ActionTypes.STOP_CYCLE,
           payload: {
             activeCyclesID
         }
@@ -71,7 +90,7 @@ export function CyclesContextProvider({ children }: CycleContextProviderProps){
         }
     
         dispatch({
-            type: 'ADD_NEW_CYCLE',
+            type: ActionTypes.ADD_NEW_CYCLE,
             payload: {
               newCycle
           }

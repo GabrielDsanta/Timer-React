@@ -1,4 +1,5 @@
 
+import { produce } from 'immer'
 
 
 
@@ -16,49 +17,53 @@ interface CyclesStateData{
   activeCyclesID: string | null
 }
 
+export enum ActionTypes{
+  ADD_NEW_CYCLE = 'ADD_NEW_CYCLE',
+  STOP_CYCLE = 'STOP_CYCLE',
+  FINISH_CYCLE = 'FINISH_CYCLE',
+}
+
 export function ReducerCycle(state: CyclesStateData, action: any) {
 
   switch(action.type){
-    case 'ADD_NEW_CYCLE':
-      return {
-        ...state, 
-        cycles: [...state.cycles, action.payload.newCycle],
-        activeCyclesID: action.payload.newCycle.id,
+    case ActionTypes.ADD_NEW_CYCLE:{
+      return produce(state, (draft) => {
+        draft.cycles.push(action.payload.newCycle)
+        draft.activeCyclesID = action.payload.newCycle.id
+      })
+    }
+
+    case ActionTypes.STOP_CYCLE:{
+      const currentCycleIndex = state.cycles.findIndex(cycle => {
+        return cycle.id === state.activeCyclesID
+      })
+
+      if(currentCycleIndex < 0){
+        return state
       }
 
-    case 'STOP_CYCLE':
-      return{
-        ...state,
-        cycles: state.cycles.map((cycle) => {
-  
-          if(cycle.id === state.activeCyclesID){
-            return { ...cycle, stopDate: new Date() }
-          }
-    
-          else{
-            return cycle
-          }
-    
-        }),
-        activeCyclesID: null
+      return produce(state, (draft) => {
+        draft.activeCyclesID = null
+
+        draft.cycles[currentCycleIndex].stopDate = new Date()
+      })
+    }
+
+    case ActionTypes.FINISH_CYCLE:{
+      const currentCycleIndex = state.cycles.findIndex(cycle => {
+        return cycle.id === state.activeCyclesID
+      })
+
+      if(currentCycleIndex < 0){
+        return state
       }
 
-    case 'FINISH_CYCLE':
-      return{
-        ...state,
-        cycles: state.cycles.map((cycle) => {
-  
-          if(cycle.id === state.activeCyclesID){
-            return { ...cycle, finishDate: new Date() }
-          }
-    
-          else{
-            return cycle
-          }
-    
-        }),
-        activeCyclesID: null
-      }
+      return produce(state, (draft) => {
+        draft.activeCyclesID = null
+
+        draft.cycles[currentCycleIndex].finishDate = new Date()
+      })
+    }
 
     default:
     return state
